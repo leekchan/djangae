@@ -147,6 +147,14 @@ class Cursor(object):
             result.append(entity)
             i += 1
 
+        if hasattr(self.last_select_command, 'sort_ordering'):
+            for order, direction in reversed(self.last_select_command.sort_ordering):
+                if direction == 2:
+                    reverse = True
+                else:
+                    reverse = False
+                result.sort(key=lambda x: x[self.last_select_command.queried_fields.index(order)], reverse=reverse)
+            
         return result
 
     @property

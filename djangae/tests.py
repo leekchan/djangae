@@ -1587,3 +1587,55 @@ class TestHelperTests(TestCase):
         self.process_task_queues()
 
         self.assertNumTasksEquals(0) #No tasks
+
+
+class Article(models.Model):
+    headline = models.CharField(max_length=100)
+    pub_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.headline
+
+
+class ProgrammaticallySortTest(TestCase):
+
+    def setUp(self):
+        self.a1 = Article(headline='Article 1', pub_date=datetime.datetime(2005, 7, 26))
+        self.a1.save()
+        self.a2 = Article(headline='Article 2', pub_date=datetime.datetime(2005, 7, 27))
+        self.a2.save()
+        self.a3 = Article(headline='Article 3', pub_date=datetime.datetime(2005, 7, 27))
+        self.a3.save()
+        self.a4 = Article(headline='Article 4', pub_date=datetime.datetime(2005, 7, 28))
+        self.a4.save()
+        self.a5 = Article(headline='Article 5', pub_date=datetime.datetime(2005, 8, 1, 9, 0))
+        self.a5.save()
+        self.a6 = Article(headline='Article 6', pub_date=datetime.datetime(2005, 8, 1, 8, 0))
+        self.a6.save()
+        self.a7 = Article(headline='Article 7', pub_date=datetime.datetime(2005, 7, 27))
+        self.a7.save()
+
+    def test_programmatically_sort(self):
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('-pub_date'),
+            [repr(r) for r in Article.objects.all().order_by('-pub_date')])
+
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('pub_date'),
+            [repr(r) for r in Article.objects.all().order_by('pub_date')])
+        
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('-pub_date', 'id'),
+            [repr(r) for r in Article.objects.all().order_by('-pub_date', 'id')])
+
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('pub_date', '-id'),
+            [repr(r) for r in Article.objects.all().order_by('pub_date', '-id')])
+
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('-pub_date', '-id'),
+            [repr(r) for r in Article.objects.all().order_by('-pub_date', '-id')])
+
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('pub_date', 'id'),
+            [repr(r) for r in Article.objects.all().order_by('pub_date', 'id')])
+      
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('-headline'),
+            [repr(r) for r in Article.objects.all().order_by('-headline')])
+
+        self.assertQuerysetEqual(Article.objects.filter(id__gte=1).order_by('headline'),
+            [repr(r) for r in Article.objects.all().order_by('headline')])

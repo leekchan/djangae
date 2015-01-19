@@ -668,7 +668,11 @@ class SelectCommand(object):
                     query = datastore.MultiQuery(new_queries, ordering)
                 else:
                     query = queries[0]
-                    query.Order(*ordering)
+                    try:
+                        query.Order(*ordering)
+                    except Exception, exception:
+                        if str(exception).find('First ordering property must be the same as inequality filter property') >= 0:
+                            self.sort_ordering = ordering
         else:
             query.Order(*ordering)
 
