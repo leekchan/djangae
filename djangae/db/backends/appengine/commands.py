@@ -670,9 +670,11 @@ class SelectCommand(object):
                     query = queries[0]
                     try:
                         query.Order(*ordering)
-                    except Exception, exception:
-                        if str(exception).find('First ordering property must be the same as inequality filter property') >= 0:
+                    except datastore_errors.BadArgumentError as e:
+                        if str(e).find('First ordering property must be the same as inequality filter property') >= 0:
                             self.sort_ordering = ordering
+                        else:
+                            raise
         else:
             query.Order(*ordering)
 
