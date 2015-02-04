@@ -30,7 +30,7 @@ which avoids any slicing at all.  The whole query and offset is based on Datasto
 
 The `@paginated_model` decorator allows you to specify which fields on your model you want to order
 by (you can specify multiple orderings for a model) and generates the pre-calculated fields for you.
-The `DatastorePaginator` then seemlessly uses these pre-calculated fields and does the offset/limiting for you.
+The `DatastorePaginator` then seamlessly uses these pre-calculated fields and does the offset/limiting for you.
 
 The `lookahead` argument to the paginator tells it how many pages ahead it should look.  E.g. if
 you set lookahead to `10` then it will query ahead to find the offset value to allow it to jump 10 pages.
@@ -105,7 +105,7 @@ def listing(request):
     return render_to_response('list.html', {"contacts": contacts})
 ```
 
-## Configuation
+## Configuration
 
 The Paginator caches the values for offsetting the queries.  You can configure the cache expiry time
 by defining `settings.DJANGAE_PAGINATION_CACHE_TIME`.

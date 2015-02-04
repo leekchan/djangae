@@ -15,7 +15,7 @@ from djangae.db.constraints import UniqueMarker
 
 
 ACTION_TYPES = [
-    ('check', 'Check'),  # Verify all models unique contraint markers exist and are assigned to it.
+    ('check', 'Check'),  # Verify all models unique constraint markers exist and are assigned to it.
     ('repair', 'Repair'),  # Recreate any missing markers
     ('clean', 'Clean'),  # Remove any marker that isn't properly linked to an instance.
 ]
@@ -139,7 +139,7 @@ class CheckRepairMapper(MapReduceTask):
         for i, m in zip(identifier_keys, markers):
             marker_key = str(i)
             if m is None:
-                # Missig marker
+                # Missing marker
                 if repair:
                     new_marker = datastore.Entity(UniqueMarker.kind(), name=i.name())
                     new_marker['instance'] = instance_key
@@ -148,7 +148,7 @@ class CheckRepairMapper(MapReduceTask):
                     log(action_id, "missing_marker", instance_key, marker_key)
 
             elif not m['instance']:
-                # Marker with missining instance attribute
+                # Marker with missing instance attribute
                 if repair:
                     m['instance'] = instance_key
                     markers_to_save.append(m)
@@ -158,7 +158,7 @@ class CheckRepairMapper(MapReduceTask):
             elif m['instance'] != instance_key:
                 # Marker already assigned to a different instance
                 log(action_id, "already_assigned", instance_key, marker_key)
-                # Also log in repair mode as reparing would break the other instance.
+                # Also log in repair mode as repairing would break the other instance.
 
         if markers_to_save:
             datastore.Put(markers_to_save)
